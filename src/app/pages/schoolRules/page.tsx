@@ -17,7 +17,7 @@ export default function SchoolRules() {
                 <li>Students are prohibited to go out of school premises during school hours and lunch hour without the permission of the principal.</li>
                 <li>Any damage done to school property should be replaced by the pupil concerned.</li>
                 <li>Disobedience and misbehaviour towards staff members or repeated breaking of school rules or behaviour objectionable to the good tone of the school, even outside the school premises will deserve severe punishment or even dismissal if warnings are ignored.</li>
-                <li>There is no provision for "Reassessment or Promotion on trial".</li>
+                <li>There is no provision for &quot;Reassessment or Promotion on trial&quot;.</li>
                 <li>No TRANSFER CERTIFICATE OR LEAVING CERTIFICATE will be issued until all dues to the school have been paid in full, with a written application from parent or guardian.</li>
                 <li>Fees are to be paid in advance before the 10th of each month.</li>
                 <li>THIS SCHOOL RESERVES THE RIGHT TO INCREASE THE FEE AT ANY TIME OF THE SCHOOL YEAR, IF ANY INCREMENT IS DEEMED NECESSARY.</li>

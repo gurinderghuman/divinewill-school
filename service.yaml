@@ -4,7 +4,7 @@ metadata:
   name: portfolio-website-service
 spec:
   type: LoadBalancer
-  loadBalancerIP: 34.110.177.79
+  loadBalancerIP: 34.54.95.206
   ports:
     - port: 80
       targetPort: 3000

@@ -1,49 +1,44 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import styles from './PhotoCarousel.module.css';
 
-interface Photo {
-  src: string;
-  alt: string;
-}
+const PhotoCarousel: React.FC = () => {
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
-interface PhotoCarouselProps {
-  photos: Photo[];
-}
+  useEffect(() => {
+    // Fetch photos from Wikimedia Commons
+    fetch('https://commons.wikimedia.org/w/api.php?action=query&generator=random&grnnamespace=6&prop=imageinfo&iiprop=url&format=json&origin=*&grnlimit=10')
+      .then(response => response.json())
+      .then(data => {
+        const fetchedPhotos = Object.values(data.query.pages).map((page: any) => page.imageinfo[0].url);
+        setPhotos(fetchedPhotos);
+      })
+      .catch(error => console.error('Error fetching photos:', error));
+  }, []);
 
-const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ photos }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPhotoIndex((prevIndex) => (prevIndex + 1) % photos.length);
+    }, 5000);
 
-  const nextPhoto = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % photos.length);
-  };
+    return () => clearInterval(interval);
+  }, [photos]);
 
-  const prevPhoto = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
-  };
+  if (photos.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className={styles.carousel}>
-      <button className={styles.arrow} onClick={prevPhoto}>&lt;</button>
-      <div className={styles.imageContainer}>
-        <svg width="100%" height="100%">
-          <image
-            href={photos[currentIndex].src}
-            className={styles.image}
-            width="100%"
-            height="100%"
-          />
-        </svg>
-      </div>
-      <button className={styles.arrow} onClick={nextPhoto}>&gt;</button>
-      <div className={styles.indicators}>
-        {photos.map((_, index) => (
-          <span
-            key={index}
-            className={`${styles.indicator} ${index === currentIndex ? styles.active : ''}`}
-            onClick={() => setCurrentIndex(index)}
-          />
-        ))}
-      </div>
+    <div className={styles.carouselContainer}>
+      <Image
+        src={photos[currentPhotoIndex]}
+        alt={`Carousel photo ${currentPhotoIndex + 1}`}
+        fill
+        style={{ objectFit: 'cover' }}
+      />
     </div>
   );
 };

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: portfolio-website
-        image: gcr.io/portfolio-website-433505/portfolio-website:latest
+        image: gcr.io/divine-will-school/portfolio-website:latest
         ports:
         - containerPort: 3000
         resources:

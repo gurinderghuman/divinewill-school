@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import './globals.css';
 
@@ -12,9 +13,12 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex flex-col min-h-screen">
         <Navbar />
-        <main className="flex-grow container mx-auto px-4 py-8">
-          {children}
-        </main>
+        <div className="flex flex-grow">
+          <Sidebar />
+          <main className="flex-grow p-8">
+            {children}
+          </main>
+        </div>
         <Footer />
       </body>
     </html>

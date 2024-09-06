@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const Sidebar = () => {
   return (
-    <aside className="bg-gray-800 text-white w-64 min-h-screen p-4">
+    <aside className="bg-green-800 text-white w-64 min-h-screen p-4">
       <nav>
         <ul className="space-y-2">
           <li><Link href="/" className="block hover:bg-gray-700 p-2 rounded">Home</Link></li>

@@ -1,13 +1,16 @@
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
   args:
-  - 'container'
-  - 'clusters'
-  - 'get-credentials'
-  - 'divine-will-cluster'
-  - '--zone=us-central1-a'
-  - '--project=divine-will-school'
+  - '-c'
+  - |
+    gcloud container clusters get-credentials divine-will-cluster \
+      --zone=us-central1-a \
+      --project=divine-will-school \
+      $${CLOUDSDK_GET_CREDENTIALS_OPTS}
   id: 'Get cluster credentials'
+  env:
+  - 'CLOUDSDK_GET_CREDENTIALS_OPTS=--internal-ip --quiet'
 
 - name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'k8s/']

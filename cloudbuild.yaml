@@ -1,31 +1,19 @@
 steps:
-# Build the container image
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/divine-will-school/portfolio-website:$COMMIT_SHA', '.']
-# Push the container image to Container Registry
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/divine-will-school/portfolio-website:$COMMIT_SHA']
-# Deploy container image to GKE
-- name: 'gcr.io/cloud-builders/gke-deploy'
+- name: 'gcr.io/cloud-builders/gcloud'
   args:
-  - run
-  - --filename=deployment.yaml
-  - --image=gcr.io/divine-will-school/portfolio-website:$COMMIT_SHA
-  - --location=us-central1-c
-  - --cluster=portfolio-cluster
-# Update the service
+  - 'container'
+  - 'clusters'
+  - 'get-credentials'
+  - 'divine-will-cluster'
+  - '--zone=us-central1-a'
+  - '--project=divine-will-school'
+  id: 'Get cluster credentials'
+
 - name: 'gcr.io/cloud-builders/kubectl'
-  args: ['apply', '-f', 'service.yaml']
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=portfolio-cluster'
-# Apply the ingress
-- name: 'gcr.io/cloud-builders/kubectl'
-  args: ['apply', '-f', 'ingress.yaml']
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=portfolio-cluster'
-images:
-- 'gcr.io/divine-will-school/portfolio-website:$COMMIT_SHA'
+  args: ['apply', '-f', 'k8s/']
+  id: 'Apply Kubernetes manifests'
+
+# Add more steps as needed for your specific deployment process
+
 options:
   logging: CLOUD_LOGGING_ONLY

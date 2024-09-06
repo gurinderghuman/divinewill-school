@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: portfolio-website
+  name: divine-will-website
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: portfolio-website
+      app: divine-will-website
   template:
     metadata:
       labels:
-        app: portfolio-website
+        app: divine-will-website
     spec:
       containers:
-      - name: portfolio-website
-        image: gcr.io/divine-will-school/portfolio-website:latest
+      - name: divine-will-website
+        image: gcr.io/divine-will-school/divine-will-website:latest
         ports:
         - containerPort: 3000
         resources:

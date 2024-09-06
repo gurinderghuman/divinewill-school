@@ -1,22 +1,55 @@
 steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/divine-will-school/divine-will-website:$COMMIT_SHA', '.']
+
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/divine-will-school/divine-will-website:$COMMIT_SHA']
+
+# Get GKE credentials
 - name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - 'container'
+  - 'clusters'
+  - 'get-credentials'
+  - 'divine-will-cluster'
+  - '--zone=us-central1-a'
+  - '--project=divine-will-school'
+
+# Deploy container image to GKE
+- name: 'gcr.io/cloud-builders/gke-deploy'
+  args:
+  - run
+  - --filename=deployment.yaml
+  - --image=gcr.io/divine-will-school/divine-will-website:$COMMIT_SHA
+  - --location=us-central1-a
+  - --cluster=divine-will-cluster
+
+# Update the service
+- name: 'gcr.io/cloud-builders/kubectl'
   entrypoint: 'bash'
   args:
   - '-c'
   - |
-    gcloud container clusters get-credentials divine-will-cluster \
-      --zone=us-central1-a \
-      --project=divine-will-school \
-      $${CLOUDSDK_GET_CREDENTIALS_OPTS}
-  id: 'Get cluster credentials'
+    kubectl apply -f service.yaml -v=6 2>&1
   env:
-  - 'CLOUDSDK_GET_CREDENTIALS_OPTS=--internal-ip --quiet'
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=divine-will-cluster'
 
+# Apply the ingress
 - name: 'gcr.io/cloud-builders/kubectl'
-  args: ['apply', '-f', 'k8s/']
-  id: 'Apply Kubernetes manifests'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    kubectl apply -f ingress.yaml -v=6 2>&1
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=divine-will-cluster'
 
-# Add more steps as needed for your specific deployment process
+images:
+- 'gcr.io/divine-will-school/divine-will-website:$COMMIT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
